@@ -76,7 +76,7 @@ public class MovimientoCaballo {
     /**
      * Método : evaluarMovimiento
      * @param movimiento
-     * @return
+     * @return boolean
      */
     public boolean evaluarMovimiento(int movimiento) {
 	if((filaActual+vertical[movimiento])>7 
@@ -85,7 +85,7 @@ public class MovimientoCaballo {
 		|| (columnaActual+horizontal[movimiento])<0) return false;
 	if(tablero[filaActual+vertical[movimiento]][columnaActual+horizontal[movimiento]]!=0) return false;
 	return true;
-    }
+    } //fin del método evaluarMovimiento
     
     /**
      * Método : moverCaballo
@@ -95,16 +95,17 @@ public class MovimientoCaballo {
     public void moverCaballo() throws NumberFormatException, IOException {
 	verTablero();
 	System.out.println();
-	while(movimientosPosibles()!=0 && movimientosRealizados<65) {
+	//mientras halla movimientos posibles y no hallamos acabado el camino
+	while(movimientosPosibles()!=0 && movimientosRealizados<65) { 
 	    System.out.println("Dígame un movimiento");
-	    int movimiento = pedirNumero();
-	    if(evaluarMovimiento(movimiento)) {
+	    int movimiento = pedirNumero(); //pedimos el número
+	    if(evaluarMovimiento(movimiento)) { //si es posible realizar el movimiento
 		realizarMovimiento(movimiento);
 	    } else {
 		System.out.println("Imposible realizar ese movimiento");
-	    }
-	}
-    }
+	    } //fin del if..else
+	} //fin del while
+    } //fin del método moverCaballo
     
     /**
      * Método : realizarMovimiento
@@ -115,9 +116,21 @@ public class MovimientoCaballo {
 	columnaActual+=horizontal[movimiento];
 	movimientosRealizados++;
 	tablero[filaActual][columnaActual] = movimientosRealizados;
-	
-	
-    }
+    } //fin del método realizarMovimiento
+    
+    /**
+     * Método : verTablero
+     */
+    public void verTablero() {
+	System.out.println(" | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |");
+	for (int i = 0; i < tablero.length; i++) {
+	    System.out.print(i + "|");
+	    for (int j = 0; j < tablero.length; j++) {
+		System.out.print(" " + tablero[i][j] + " |");
+	    }
+	    System.out.println();
+	}
+    } //fin del método verTablero
     
     /**
      * Método : verTablero
@@ -132,44 +145,36 @@ public class MovimientoCaballo {
 	    }
 	    System.out.println();
 	}
-    }
-    
-    /**
-     * Método : verTablero
-     */
-    public void verTablero() {
-	System.out.println(" | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |");
-	for (int i = 0; i < tablero.length; i++) {
-	    System.out.print(i + "|");
-	    for (int j = 0; j < tablero.length; j++) {
-		System.out.print(" " + tablero[i][j] + " |");
-	    }
-	    System.out.println();
-	}
-    }
+    } //fin del método verTablero sobrecargado
     
     /**
      * Método : movimientosPosibles
-     * @return
+     * @return movimientosPosibles
      */
     public int movimientosPosibles() {
 	int tableroClon[][] = new int[8][8];
-	int movimientosPosibles = 0;
+	int movimientosPosibles = 0; //inicializamos a 0 porque no hay movimientos posibkes
+	
+	//realizamos una copia del tablero
 	for (int i = 0; i < tableroClon.length; i++) {
 	    for (int j = 0; j < tableroClon.length; j++) {
 		tableroClon[i][j] =  tablero[i][j];
 	    }
-	}
+	} //fin de la copia del tablero
+	
+	//evaluamos los 7 movimientos posibles
 	for (int i = 0; i < 8; i++) {
-	    if(evaluarMovimiento(i)) {
+	    if(evaluarMovimiento(i)) { //si es posible realizar ese movimiento
+		//y no se ha realizado un movimiento a esa casilla
 		if(tableroClon[filaActual+vertical[i]][columnaActual+horizontal[i]]==0)
-		    tableroClon[filaActual+vertical[i]][columnaActual+horizontal[i]] = i+80;
-		movimientosPosibles++;
-	    }
-	}
-	verTablero(tableroClon);
-	return movimientosPosibles;
-    }
+		    tableroClon[filaActual+vertical[i]][columnaActual+horizontal[i]] = i+80; //asignamos la posibilidad
+		movimientosPosibles++; //incrementamos los movimientosPosibles
+	    } //fin if
+	} //fin for
+	
+	verTablero(tableroClon); //mostramos el tablero de posibilidades
+	return movimientosPosibles; //devolvemos el numero de movimientos posibles
+    } //fin del método movimientosPosibles
     
     /**
      * Método : pedirNumero
@@ -187,7 +192,7 @@ public class MovimientoCaballo {
 		}
 	    } while (numero<0 || numero>7); //fin del do..while
 	return numero;
-    }
+    } //fin del método pedirNumero
     
     /**
      * Método : main
@@ -201,15 +206,14 @@ public class MovimientoCaballo {
 	    MovimientoCaballo mv = null;
 	    try {
 		mv = new MovimientoCaballo(fila, columna);
-	    } catch (CaballoException e) {
-		
-		e.printStackTrace();
-	    }
-	    try {
 		mv.moverCaballo();
-	    } catch (NumberFormatException | IOException e) {
-		
+	    } catch (CaballoException e) {
+		e.printStackTrace();
+	    } catch (NumberFormatException e) {
+		e.printStackTrace();
+	    } catch (IOException e) {
 		e.printStackTrace();
 	    }
-    }
-}
+    } //fin del main
+    
+} //fin de la clase MovimientoCaballo
